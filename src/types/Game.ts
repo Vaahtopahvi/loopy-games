@@ -1,7 +1,7 @@
 export type Game = {
   id: string;
   title: string;
-  genres: String[];
+  genres: string[];
   platforms: string; // String[] if multiple platforms
   completionDate: string; // ISO date string
   hoursPlayed: number;

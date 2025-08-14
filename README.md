@@ -69,3 +69,5 @@ export default tseslint.config([
 ```
 
 Known problems:
+
+-How to render GameCard component instead of 

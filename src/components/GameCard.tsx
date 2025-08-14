@@ -24,8 +24,34 @@ export function GameCard({ game }: GameCardProps) {
               {genre}
             </Badge>
           ))}
+          {game.platforms.map((platform) => (
+            <Badge key={platform} variant="outline">
+              {platform}
+            </Badge>
+          ))}
         </div>
       </CardHeader>
+
+      <CardContent className="space-y-2">
+        <p className="text-sm">
+          <strong>Completed:</strong> {game.completionDate}
+        </p>
+        <p className="text-sm">
+          <strong>Hours:</strong> {game.hoursPlayed}h
+        </p>
+        <p className="text-sm">
+          <strong>Rating:</strong> {"⭐".repeat(game.rating)}
+        </p>
+        <p className="text-sm">{game.review}</p>
+        {game.interestingFact && (
+          <p className="text-sm italic">{game.interestingFact}</p>
+        )}
+      </CardContent>
+
+      <CardFooter className="flex items-center justify-between">
+        <span className="text-sm">Recommend?</span>
+        <Switch checked={game.recommended} />
+      </CardFooter>
     </Card>
   );
 }
