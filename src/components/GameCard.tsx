@@ -9,13 +9,42 @@ import { Switch } from "../components/ui/switch";
 
 import { type Game } from "../types/Game";
 
+const GENRES = [
+  "Action",
+  "Adventure",
+  "RPG",
+  "Strategy",
+  "Simulation",
+  "Sports",
+  "Racing",
+  "Fighting",
+  "Puzzle",
+  "Shooter",
+  "Horror",
+  "Roguelike",
+  "MMORPG",
+  "Battle Royale",
+  "Survival",
+  "Stealth",
+  "Indie",
+];
+
+const PLATFORMS = [
+  "PC",
+  "PlayStation 5",
+  "Xbox Series X/S",
+  "Mobile",
+  "Nintendo Switch",
+  "Retro Console",
+];
+
 type GameCardProps = {
   game: Game;
 };
 
 export function GameCard({ game }: GameCardProps) {
   return (
-    <Card className="bg-gray-900 text-white w-full">
+    <Card className="bg-(--bg-card) text-white w-full">
       <CardHeader>
         {game.coverImage && (
           <img
@@ -27,14 +56,26 @@ export function GameCard({ game }: GameCardProps) {
         <h2 className="text-lg font-semibold">{game.title}</h2>
         <div className="flex flex-wrap gap-1 mt-2">
           <Badge variant="secondary">{game.genre}</Badge>
-          <Badge variant="secondary">{game.platform}</Badge>
-          <Badge variant="default">
+          <Badge variant="secondary" className="bg-(--bg-platform) text-white ring-2 ring-gray-500/20">
+            {game.platform}
+          </Badge>
+          <Badge
+            variant="default"
+            className={
+              game.gameType === "story"
+                ? "bg-(--badge-story) text-white border-transparent"
+                : "bg-(badge-endless) text-white border-transparent"
+            }
+          >
             {game.gameType === "story" ? "Story" : "Endless"}
           </Badge>
-          {game.completionist && <Badge variant="destructive">100%</Badge>}
+          {game.completionist && (
+            <Badge variant="secondary" className="bg-(--badge-completionist)">
+              100%
+            </Badge>
+          )}
         </div>
       </CardHeader>
-
       <CardContent className="space-y-2">
         <div className="flex items-center gap-4 text-sm mb-2">
           <span>
@@ -66,12 +107,11 @@ export function GameCard({ game }: GameCardProps) {
       </CardContent>
 
       <CardFooter className="flex items-center justify-between">
-        <span className="text-sm">Recommend?</span>
         <div className="flex items-center gap-2">
+          <span className="text-sm">Recommend?</span>
           <Switch checked={game.recommended} />
-          {game.recommended && <Badge variant="secondary">Recommended</Badge>}
         </div>
-        <Switch checked={game.recommended} />
+          {game.recommended && <Badge variant="secondary" className="bg-(--badge-recommended)">Recommended</Badge>}
       </CardFooter>
     </Card>
   );
