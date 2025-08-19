@@ -6,7 +6,20 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Switch } from "../components/ui/switch";
-
+// import {
+//   Star,
+//   Gamepad2,
+//   Calendar,
+//   Clock,
+//   Edit3,
+//   Save,
+//   X,
+//   Trophy,
+//   Infinity,
+//   Trash2,
+//   ChevronDown,
+//   ChevronUp,
+// } from "lucide-react";
 import { type Game } from "../types/Game";
 
 const GENRES = [
@@ -56,7 +69,10 @@ export function GameCard({ game }: GameCardProps) {
         <h2 className="text-lg font-semibold">{game.title}</h2>
         <div className="flex flex-wrap gap-1 mt-2">
           <Badge variant="secondary">{game.genre}</Badge>
-          <Badge variant="secondary" className="bg-(--bg-platform) text-white ring-2 ring-gray-500/20">
+          <Badge
+            variant="secondary"
+            className="bg-(--bg-platform) text-white ring-2 ring-gray-500/20"
+          >
             {game.platform}
           </Badge>
           <Badge
@@ -111,7 +127,11 @@ export function GameCard({ game }: GameCardProps) {
           <span className="text-sm">Recommend?</span>
           <Switch checked={game.recommended} />
         </div>
-          {game.recommended && <Badge variant="secondary" className="bg-(--badge-recommended)">Recommended</Badge>}
+        {game.recommended && (
+          <Badge variant="secondary" className="bg-(--badge-recommended)">
+            Recommended
+          </Badge>
+        )}
       </CardFooter>
     </Card>
   );
