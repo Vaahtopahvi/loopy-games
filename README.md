@@ -70,4 +70,4 @@ export default tseslint.config([
 
 Known problems:
 
--How to render GameCard component instead of 
+- Get the right lucide icons for date, completionist, genre, game mode, rating, clock / time spent, info / about this site
