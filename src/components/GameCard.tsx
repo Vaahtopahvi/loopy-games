@@ -6,20 +6,7 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Switch } from "../components/ui/switch";
-// import {
-//   Star,
-//   Gamepad2,
-//   Calendar,
-//   Clock,
-//   Edit3,
-//   Save,
-//   X,
-//   Trophy,
-//   Infinity,
-//   Trash2,
-//   ChevronDown,
-//   ChevronUp,
-// } from "lucide-react";
+import { CalendarCheck2, Clock, Gamepad2 } from "lucide-react";
 import { type Game } from "../types/Game";
 
 const GENRES = [
@@ -68,7 +55,12 @@ export function GameCard({ game }: GameCardProps) {
         )}
         <h2 className="text-lg font-semibold">{game.title}</h2>
         <div className="flex flex-wrap gap-1 mt-2">
-          <Badge variant="secondary">{game.genre}</Badge>
+          <Badge variant="secondary">
+            <span className="flex items-center gap-1">
+              <Gamepad2 className="h-3 w-3" />
+              {game.genre}
+            </span>
+          </Badge>
           <Badge
             variant="secondary"
             className="bg-(--bg-platform) text-white ring-2 ring-gray-500/20"
@@ -93,18 +85,13 @@ export function GameCard({ game }: GameCardProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex items-center gap-4 text-sm mb-2">
-          <span>
-            <span role="img" aria-label="calendar">
-              📅
-            </span>{" "}
-            Completed: {game.completionDate}
+        <div className="flex justify-between gap-4 text-sm mb-2">
+          <span className="flex items-center gap-2">
+            <CalendarCheck2 className="w-4 h-4" /> Completed:{" "}
+            {game.completionDate}
           </span>
-          <span>
-            <span role="img" aria-label="clock">
-              ⏰
-            </span>{" "}
-            {game.playtime}h
+          <span className="flex items-center gap-2">
+            <Clock className="w-4 h-4" /> {game.playtime}h
           </span>
         </div>
         <div>
