@@ -82,7 +82,7 @@
 
 .dark {
   --bg-main: oklch(0.1795 0.0168 273.68);
-  --bg-card: oklch(0.2237 0.0201 271.7);
+  --bg-card: oklch(0.15 0.02 260);
   --bg-card-hover: oklch(0.26 0.04 264.7);
   --bg-platform: oklch(0.2237 0.0201 271.7);
   --border: oklch(0.28 0.0369 259.97);
