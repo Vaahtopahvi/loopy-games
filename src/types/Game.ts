@@ -4,7 +4,7 @@ export type Game = {
   genre: string;
   platform: string; // String[] if multiple platforms
   completionDate: string; // ISO date string
-  playtime: string; // e.g., "On-going" or "2024-02-28"
+  playtimeHours: number; // e.g., "On-going" or "2024-02-28"
   rating: number; // 0-5 stars
   review: string;
   interestingFact: string; //questionmark means this field is optional
