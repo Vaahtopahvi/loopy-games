@@ -25,7 +25,7 @@ export const games: Game[] = [
     platform: "Switch",
     completionDate: "2024/02/28",
     playtimeHours: 85,
-    rating: 4,
+    rating: 4.5,
     review: "Perfect blend of storytelling and gameplay. Each run feels fresh and the narrative progresses even through failure. The art style and music are incredible.",
     interestingFact:
       "The voice actor for Zagreus recorded over 21,000 lines of dialogue.",
@@ -42,7 +42,7 @@ export const games: Game[] = [
     platform: "Playstation 5",
     completionDate: "2024/01/15",
     playtimeHours: 120,
-    rating: 5,
+    rating: 3,
     review:
       "An absolute masterpiece. The storytelling, world-building, and character development are unparalleled. Every side quest feels meaningful and the main story is gripping from start to finish.",
     interestingFact:
