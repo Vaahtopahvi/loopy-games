@@ -5,7 +5,7 @@ export type Game = {
   platform: string; // String[] if multiple platforms
   completionDate: string; // ISO date string
   playtimeHours: number; // e.g., "On-going" or "2024-02-28"
-  rating: number; // 0-5 stars
+  rating: number; // 0-5 stars (supports half stars: 0.5, 1.5, 2.5, etc.)
   review: string;
   interestingFact: string; //questionmark means this field is optional
   coverImage?: string; // URL to the game's image
