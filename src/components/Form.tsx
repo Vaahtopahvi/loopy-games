@@ -1,0 +1,256 @@
+import { useState } from "react";
+import { Trophy, Star } from "lucide-react";
+
+const GENRES = [
+  "Action",
+  "Adventure",
+  "RPG",
+  "Strategy",
+  "Simulation",
+  "Sports",
+  "Racing",
+  "Fighting",
+  "Puzzle",
+  "Shooter",
+  "Horror",
+  "Roguelike",
+  "MMORPG",
+  "Battle Royale",
+  "Survival",
+  "Stealth",
+  "Indie",
+];
+
+const PLATFORMS = [
+  "PC",
+  "PlayStation 5",
+  "Xbox Series X/S",
+  "Mobile",
+  "Nintendo Switch",
+  "Retro Console",
+];
+
+function Form() {
+  const [genre, setGenre] = useState("Select genre");
+  const [platform, setPlatform] = useState("Select platform");
+  const [completionDate, setCompletionDate] = useState("");
+  const [isOngoing, setIsOngoing] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const [interestingFact, setInterestingFact] = useState("");
+  
+  return (
+    <form>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-white mb-2">
+            Game Title
+          </label>
+          <input
+            type="text"
+            placeholder="Enter game title"
+            className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-white mb-2">
+            Cover Image URL
+          </label>
+          <input
+            type="text"
+            placeholder="Unless IGDB doesn't find, provide own"
+            className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-white mb-2">
+              Genre
+            </label>
+
+            <select
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="Select genre" disabled>
+                Select genre
+              </option>
+              {GENRES.map((genreOption) => (
+                <option key={genreOption} value={genreOption}>
+                  {genreOption}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-white mb-2">
+              Platform
+            </label>
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+              className=" w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="Select platform" disabled>
+                Select platform
+              </option>
+              {PLATFORMS.map((platformOption) => (
+                <option key={platformOption} value={platformOption}>
+                  {platformOption}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-white mb-2">
+              Playtime in hours
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. 69"
+              className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+        </div>
+        {/* completion status section */}
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-white mb-2">
+              Completion Status
+            </label>
+            <div className="flex items-center gap-3 mb-2">
+              <button
+                type="button"
+                onClick={() => setIsOngoing(!isOngoing)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  isOngoing ? 'bg-purple-600' : 'bg-gray-700'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isOngoing ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className="text-white text-sm">On-going</span>
+            </div>
+            {!isOngoing && (
+              <input
+                type="date"
+                value={completionDate}
+                onChange={(e) => setCompletionDate(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            )}
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-white mb-2">
+              {isCompleted ? "Nice." : "Were you a man enough?"}
+            </label>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsCompleted(!isCompleted)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  isCompleted ? 'bg-purple-600' : 'bg-gray-700'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isCompleted ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+              <span className="text-white text-sm">100% Completed</span>
+              {isCompleted && (
+                <Trophy className="w-4 h-4 text-blue-400"/>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* rating section. why does it has to be so difficult to implement? AAAAAARGH. thx AI */}
+        <div>
+          <label className="block text-sm font-medium text-white mb-2">
+            Rating
+          </label>
+          <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const isFull = star <= Math.floor(rating);
+              const isHalf = !isFull && star - 0.5 === rating;
+
+              return (
+                <div key={star} className="relative w-6 h-6">
+                  {/* full star button (right half) */}
+                  <button
+                    type="button"
+                    onClick={() => setRating(star)}
+                    className="absolute right-0 w-1/2 h-full z-10"
+                    aria-label={`Rate ${star} stars`}
+                  />
+                  {/* half star button (left half) */}
+                  <button
+                    type="button"
+                    onClick={() => setRating(star - 0.5)}
+                    className="absolute left-0 w-1/2 h-full z-10"
+                    aria-label={`Rate ${star - 0.5} stars`}
+                  />
+                  
+                  {/* star icon display */}
+                  {isFull ? (
+                    <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                  ) : isHalf ? (
+                    <>
+                      {/* empty star background */}
+                      <Star className="w-6 h-6 fill-none text-gray-600 absolute" />
+                      {/* half star overlay - clip the left 50% */}
+                      <div className="overflow-hidden w-1/2 absolute">
+                        <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                      </div>
+                    </>
+                  ) : (
+                    <Star className="w-6 h-6 fill-none text-gray-600" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* review section */}
+        <div>
+          <label className="block text-sm font-medium text-white mb-2">
+            Review
+          </label>
+          <textarea
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+            placeholder="What made the game so special?"
+            rows={4}
+            className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+          />
+        </div>
+
+        {/* interesting fact section */}
+        <div>
+          <label className="block text-sm font-medium text-white mb-2">
+            Interesting Fact
+          </label>
+          <input
+            type="text"
+            value={interestingFact}
+            onChange={(e) => setInterestingFact(e.target.value)}
+            placeholder="What's one interesting fact about this game?"
+            className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+      </div>
+    </form>
+  );
+}
+
+export default Form;
