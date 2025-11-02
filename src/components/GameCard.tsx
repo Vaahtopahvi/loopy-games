@@ -122,16 +122,31 @@ export function GameCard({ game }: GameCardProps) {
           <div className="flex justify-between">
             <span className="text-sm font-medium">Rating:</span>
             <div className="flex items-center gap-0.5" aria-label={`Rating ${game.rating} of 5`}>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Star
-                  key={index}
-                  className={`w-4 h-4 ${
-                    index < game.rating
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "fill-none text-gray-600"
-                  }`}
-                />
-              ))}
+              {Array.from({ length: 5 }).map((_, index) => {
+                // determine if this star should be full, half, or empty
+                const isFull = index < Math.floor(game.rating);
+                const isHalf = !isFull && index < game.rating;
+                
+                return (
+                  <div key={index} className="relative w-4 h-4">
+                    {/* full star or half star */}
+                    {isFull ? (
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    ) : isHalf ? (
+                      <>
+                        {/* empty star background */}
+                        <Star className="w-4 h-4 fill-none text-gray-600 absolute" />
+                        {/* half star overlay - clip the left 50% */}
+                        <div className="overflow-hidden w-1/2 absolute">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        </div>
+                      </>
+                    ) : (
+                      <Star className="w-4 h-4 fill-none text-gray-600" />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
