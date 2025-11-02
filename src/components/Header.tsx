@@ -7,9 +7,10 @@ import { type Game } from "../types/Game";
 type HeaderProps = {
   games: Game[];
   onFilterChange: (filteredGames: Game[]) => void;
+  onAddGame: () => void;
 };
 
-export function Header({ games, onFilterChange }: HeaderProps) {
+export function Header({ games, onFilterChange, onAddGame }: HeaderProps) {
   return (
     <header className="w-full border-b border-red-500">
       <Container className="py-6 flex flex-col gap-4">
@@ -17,7 +18,7 @@ export function Header({ games, onFilterChange }: HeaderProps) {
           <span className="text-xl font-semibold">
             Tracking and review of my favorite ones
           </span>
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2">
+          <Button onClick={onAddGame} className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 cursor-pointer">
             <Plus size={16} />
             Add New Game
           </Button>
