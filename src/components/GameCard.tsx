@@ -6,7 +6,15 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Switch } from "../components/ui/switch";
-import { Clock, Gamepad2, Pencil, CheckCircle2, CircleHelp, Star, Trophy } from "lucide-react";
+import {
+  Clock,
+  Gamepad2,
+  Pencil,
+  CheckCircle2,
+  CircleHelp,
+  Star,
+  Trophy,
+} from "lucide-react";
 import { type Game } from "../types/Game";
 
 const GENRES = [
@@ -38,6 +46,11 @@ const PLATFORMS = [
   "Retro Console",
 ];
 
+// helper function to convert genre to badge variant
+const getGenreVariant = (genre: string): string => {
+  return genre.toLowerCase().replace(/\s+/g, "");
+};
+
 type GameCardProps = {
   game: Game;
 };
@@ -58,17 +71,20 @@ export function GameCard({ game }: GameCardProps) {
               />
             </div>
           )}
-          
+
           {/* Badges and Edit Button */}
           <div className="flex-1 flex flex-col gap-1">
             <div className="flex items-start justify-between">
               <h2 className="text-base font-semibold">{game.title}</h2>
               <button className="p-2 rounded-md hover:bg-white/10">
-                <Pencil className="h-4 w-4 text-white/70"/>
+                <Pencil className="h-4 w-4 text-white/70" />
               </button>
             </div>
             <div className="flex flex-wrap gap-1.5">
-              <Badge variant="secondary" className="text-xs">
+              <Badge
+                variant={getGenreVariant(game.genre) as any}
+                className="text-xs"
+              >
                 <span className="flex items-center gap-1">
                   <Gamepad2 className="h-3 w-3" />
                   {game.genre}
@@ -76,7 +92,7 @@ export function GameCard({ game }: GameCardProps) {
               </Badge>
               <Badge
                 variant="secondary"
-                className="bg-(--bg-platform) text-white ring-2 ring-gray-500/20 text-xs"
+                className="bg-(--bg-platform) text-white ring-2 ring-gray-500/20 text-xs hover:bg-secondary/15"
               >
                 {game.platform}
               </Badge>
@@ -84,14 +100,14 @@ export function GameCard({ game }: GameCardProps) {
                 variant="default"
                 className={
                   game.gameType === "story"
-                    ? "bg-(--badge-story) text-white border-transparent text-xs"
-                    : "bg-(badge-endless) text-white border-transparent text-xs"
+                    ? "bg-(--badge-story) text-white text-xs hover:bg-(--badge-story)/80 ring-2 ring-gray-500/30"
+                    : "bg-(--badge-endless) text-white text-xs hover:bg-(--badge-endless)/80 ring-2 ring-gray-500/10"
                 }
               >
                 {game.gameType === "story" ? "Story" : "Endless"}
               </Badge>
               {game.completionist && (
-                <Badge variant="secondary" className="bg-(--badge-completionist) text-xs">
+                <Badge variant="completionist">
                   <span className="flex items-center gap-1">
                     <Trophy className="h-3 w-3" />
                     100%
@@ -105,77 +121,81 @@ export function GameCard({ game }: GameCardProps) {
 
       {/* Content: Rating, Review, Fact */}
       <CardContent className="space-y-5 pt-0 pb-3 flex-1 px-4">
-          <div className="flex items-center justify-between text-sm">
-            <span className="flex items-center gap-2 text-white/80">
-              {game.isOngoing ? (
-                <CircleHelp className="w-4 h-4" />
-              ) : (
-                <CheckCircle2 className="w-4 h-4" />
-              )}
-              {game.isOngoing ? "On-going" : `Completed: ${game.completionDate}`}
-            </span>
-            <span className="flex items-center gap-2 text-white/80">
-              <Clock className="w-4 h-4" /> {game.playtimeHours}h
-            </span>
-          </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-2 text-white/80">
+            {game.isOngoing ? (
+              <CircleHelp className="w-4 h-4" />
+            ) : (
+              <CheckCircle2 className="w-4 h-4" />
+            )}
+            {game.isOngoing ? "On-going" : `Completed: ${game.completionDate}`}
+          </span>
+          <span className="flex items-center gap-2 text-white/80">
+            <Clock className="w-4 h-4" /> {game.playtimeHours}h
+          </span>
+        </div>
 
-          <div className="flex justify-between">
-            <span className="text-sm font-medium">Rating:</span>
-            <div className="flex items-center gap-0.5" aria-label={`Rating ${game.rating} of 5`}>
-              {Array.from({ length: 5 }).map((_, index) => {
-                // determine if this star should be full, half, or empty
-                const isFull = index < Math.floor(game.rating);
-                const isHalf = !isFull && index < game.rating;
-                
-                return (
-                  <div key={index} className="relative w-4 h-4">
-                    {/* full star or half star */}
-                    {isFull ? (
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ) : isHalf ? (
-                      <>
-                        {/* empty star background */}
-                        <Star className="w-4 h-4 fill-none text-gray-600 absolute" />
-                        {/* half star overlay - clip the left 50% */}
-                        <div className="overflow-hidden w-1/2 absolute">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        </div>
-                      </>
-                    ) : (
-                      <Star className="w-4 h-4 fill-none text-gray-600" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+        <div className="flex justify-between">
+          <span className="text-sm font-medium">Rating:</span>
+          <div
+            className="flex items-center gap-0.5"
+            aria-label={`Rating ${game.rating} of 5`}
+          >
+            {Array.from({ length: 5 }).map((_, index) => {
+              // determine if this star should be full, half, or empty
+              const isFull = index < Math.floor(game.rating);
+              const isHalf = !isFull && index < game.rating;
 
+              return (
+                <div key={index} className="relative w-4 h-4">
+                  {/* full star or half star */}
+                  {isFull ? (
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  ) : isHalf ? (
+                    <>
+                      {/* empty star background */}
+                      <Star className="w-4 h-4 fill-none text-gray-600 absolute" />
+                      {/* half star overlay - clip the left 50% */}
+                      <div className="overflow-hidden w-1/2 absolute">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      </div>
+                    </>
+                  ) : (
+                    <Star className="w-4 h-4 fill-none text-gray-600" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <strong className="block mb-1 text-sm">Review</strong>
+          <p className="text-sm text-white/90 leading-relaxed">{game.review}</p>
+        </div>
+
+        {game.interestingFact && (
           <div>
-            <strong className="block mb-1 text-sm">Review</strong>
-            <p className="text-sm text-white/90 leading-relaxed">{game.review}</p>
+            <strong className="block mb-1 text-sm">Interesting Fact</strong>
+            <p className="text-sm italic text-blue-300/90 underline underline-offset-2 leading-relaxed">
+              {game.interestingFact}
+            </p>
           </div>
+        )}
+      </CardContent>
 
-          {game.interestingFact && (
-            <div>
-              <strong className="block mb-1 text-sm">Interesting Fact</strong>
-              <p className="text-sm italic text-blue-300/90 underline underline-offset-2 leading-relaxed">
-                {game.interestingFact}
-              </p>
-            </div>
-          )}
-        </CardContent>
-
-        <CardFooter className="flex items-center justify-between pt-0 pb-4 px-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm">Recommend?</span>
-            <Switch checked={game.recommended} />
-          </div>
-          {game.recommended && (
-            <Badge variant="secondary" className="bg-(--badge-recommended)">
-              Recommended
-            </Badge>
-          )}
-        </CardFooter>
+      <CardFooter className="flex items-center justify-between pt-0 pb-4 px-4">
+        <div className="flex items-center gap-2">
+          <span className="text-sm">Recommend?</span>
+        </div>
+        {game.recommended ? (
+          <Badge variant="secondary" className="bg-(--badge-recommended) hover:bg-(--badge-recommended)/80">
+            Recommended
+          </Badge>
+        ) : (
+          <Badge variant="roguelike">Give it a try</Badge>
+        )}
+      </CardFooter>
     </Card>
   );
 }
