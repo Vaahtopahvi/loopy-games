@@ -102,7 +102,7 @@ function SearchFilter({ games, onChange }: Props) {
         <select
           value={sortOption}  // currently selected sort option
           onChange={(e) => setSortOption(e.target.value as SortOption)}  // update when user selects
-          className="rounded-md border bg-transparent px-3 py-2 text-white text-sm cursor-pointer hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-red-500"
+          className="rounded-md border bg-transparent px-3 py-2 text-white text-sm cursor-pointer hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="a-z" className="bg-gray-900">Title A-z</option>
           <option value="z-a" className="bg-gray-900">Title z-A</option>
