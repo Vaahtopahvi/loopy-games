@@ -12,7 +12,7 @@ type HeaderProps = {
 
 export function Header({ games, onFilterChange, onAddGame }: HeaderProps) {
   return (
-    <header className="w-full border-b border-red-500">
+    <header className="w-full border-b">
       <Container className="py-6 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span className="text-xl font-semibold">
