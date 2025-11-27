@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/u
 
 export default function App() {
   const [filteredGames, setFilteredGames] = useState(allGames)
-  const [isFormOpen, setIsFormOpen] = useState(true)
+  const [isFormOpen, setIsFormOpen] = useState(false)
   
   return (
     <div className="min-h-screen text-white">

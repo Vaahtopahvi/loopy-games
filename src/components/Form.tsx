@@ -39,7 +39,7 @@ function Form() {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [interestingFact, setInterestingFact] = useState("");
-  
+
   return (
     <form>
       <div className="space-y-4">
@@ -127,12 +127,12 @@ function Form() {
                 type="button"
                 onClick={() => setIsOngoing(!isOngoing)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isOngoing ? 'bg-purple-600' : 'bg-gray-700'
+                  isOngoing ? "bg-purple-600" : "bg-gray-700"
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isOngoing ? 'translate-x-6' : 'translate-x-1'
+                    isOngoing ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>
@@ -156,19 +156,17 @@ function Form() {
                 type="button"
                 onClick={() => setIsCompleted(!isCompleted)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isCompleted ? 'bg-purple-600' : 'bg-gray-700'
+                  isCompleted ? "bg-purple-600" : "bg-gray-700"
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    isCompleted ? 'translate-x-6' : 'translate-x-1'
+                    isCompleted ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>
               <span className="text-white text-sm">100% Completed</span>
-              {isCompleted && (
-                <Trophy className="w-4 h-4 text-blue-400"/>
-              )}
+              {isCompleted && <Trophy className="w-4 h-4 text-blue-400" />}
             </div>
           </div>
         </div>
@@ -199,7 +197,7 @@ function Form() {
                     className="absolute left-0 w-1/2 h-full z-10"
                     aria-label={`Rate ${star - 0.5} stars`}
                   />
-                  
+
                   {/* star icon display */}
                   {isFull ? (
                     <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" />
