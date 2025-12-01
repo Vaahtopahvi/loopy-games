@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Trophy, Star } from "lucide-react";
+import GameAutocomplete from "./GameAutocomplete";
 
 const GENRES = [
   "Action",
@@ -30,9 +31,16 @@ const PLATFORMS = [
   "Retro Console",
 ];
 
-function Form() {
+interface FormProps {
+  onGameAdded?: () => void;
+}
+
+function Form({ onGameAdded }: FormProps) {
+  const [gameTitle, setGameTitle] = useState("");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
   const [genre, setGenre] = useState("Select genre");
   const [platform, setPlatform] = useState("Select platform");
+  const [playtimeHours, setPlaytimeHours] = useState("");
   const [completionDate, setCompletionDate] = useState("");
   const [isOngoing, setIsOngoing] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -40,17 +48,103 @@ function Form() {
   const [review, setReview] = useState("");
   const [interestingFact, setInterestingFact] = useState("");
 
+  const handleGameSelect = (game: {
+    id: number;
+    name: string;
+    releaseDate: string | null;
+    coverUrl: string | null;
+  }) => {
+    if (game.coverUrl) {
+      setCoverImageUrl(game.coverUrl);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // basic validation
+    if (!gameTitle.trim()) {
+      alert("Please enter a game title");
+      return;
+    }
+
+    if (genre === "Select genre") {
+      alert("Please select a genre");
+      return;
+    }
+
+    if (platform === "Select platform") {
+      alert("Please select a platform");
+      return;
+    }
+
+    // create game object
+    const newGame = {
+      id: gameTitle
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, ""),
+      title: gameTitle,
+      genre,
+      platform,
+      completionDate: isOngoing ? "On-going" : completionDate || "",
+      playtimeHours: parseInt(playtimeHours) || 0,
+      rating,
+      review,
+      interestingFact,
+      coverImage: coverImageUrl,
+      gameType: "story" as const, // default to story, could be enhanced later
+      recommended: false, // default to false, could be enhanced later
+      isOngoing,
+      completionist: isCompleted,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3000/api/games", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newGame),
+      });
+
+      if (response.ok) {
+        alert("Game added successfully! Change this to a toast notification");
+        // reset form
+        setGameTitle("");
+        setCoverImageUrl("");
+        setGenre("Select genre");
+        setPlatform("Select platform");
+        setPlaytimeHours("");
+        setCompletionDate("");
+        setIsOngoing(false);
+        setIsCompleted(false);
+        setRating(0);
+        setReview("");
+        setInterestingFact("");
+        // notify parent component that the game has been added
+        onGameAdded?.();
+      } else {
+        alert("Failed to add game. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding game:", error);
+      alert("Error adding game. Please check your connection.");
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-white mb-2">
             Game Title
           </label>
-          <input
-            type="text"
-            placeholder="Enter game title"
-            className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+          <GameAutocomplete
+            value={gameTitle}
+            onChange={setGameTitle}
+            onGameSelect={handleGameSelect}
+            placeholder="Search for a game..."
           />
         </div>
         <div>
@@ -59,6 +153,8 @@ function Form() {
           </label>
           <input
             type="text"
+            value={coverImageUrl}
+            onChange={(e) => setCoverImageUrl(e.target.value)}
             placeholder="Unless IGDB doesn't find, provide own"
             className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
@@ -111,6 +207,8 @@ function Form() {
             </label>
             <input
               type="text"
+              value={playtimeHours}
+              onChange={(e) => setPlaytimeHours(e.target.value)}
               placeholder="e.g. 69"
               className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
@@ -245,6 +343,16 @@ function Form() {
             placeholder="What's one interesting fact about this game?"
             className="w-full px-3 py-2 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
+        </div>
+
+        {/* submit Button */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          >
+            Add Game
+          </button>
         </div>
       </div>
     </form>
