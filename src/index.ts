@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import axios, { AxiosError } from "axios";
-import express, { Request, Response, NextFunction } from "express";
+import express, { type Request, type Response } from "express";
 import cors from "cors";
 
 // Initialize Express app
@@ -29,6 +29,9 @@ interface IGDBSearchResult {
   id: number;
   name: string;
   first_release_date?: number;
+  cover?: {
+    image_id: string;
+  };
 }
 
 // Store access token
@@ -112,39 +115,81 @@ app.get("/game/:gameName", async (req: Request, res: Response) => {
   }
 });
 
-// Test endpoint - Get popular games
-app.get('/api/games/popular', async (req: Request, res: Response) => {
+// add new game to collection
+app.post("/api/games", async (req: Request, res: Response) => {
+  try {
+    const gameData = req.body;
+
+    // basic validation
+    if (!gameData.title || !gameData.genre || !gameData.platform) {
+      return res.status(400).json({
+        error: "Missing required fields: title, genre, platform",
+      });
+    }
+
+    // here you would typically save to a database
+    // lets just return success for now
+    console.log("New game added:", gameData);
+
+    res.status(201).json({
+      message: "Game added successfully",
+      game: gameData,
+    });
+  } catch (error) {
+    console.error("Error adding game:", error);
+    res.status(500).json({ error: "Failed to add game" });
+  }
+});
+
+// search games for autocomplete
+app.get("/api/games/search", async (req: Request, res: Response) => {
   try {
     if (!accessToken) {
       await getAccessToken();
     }
 
-    const response = await axios.post(
+    const query = req.query.q as string;
+    if (!query || query.length < 2) {
+      return res.json([]);
+    }
+
+    const response = await axios.post<IGDBSearchResult[]>(
       IGDB_API_URL,
-      'fields name, cover.image_id, first_release_date, rating; where rating > 80; sort rating desc; limit 10;',
+      `search "${query}"; fields name, first_release_date, cover.image_id; limit 10;`,
       {
         headers: {
-          'Client-ID': CLIENT_ID,
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'text/plain'
-        }
+          "Client-ID": CLIENT_ID,
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json",
+        },
       }
     );
 
-    res.json(response.data);
+    const results = response.data.map((game) => ({
+      id: game.id,
+      name: game.name,
+      releaseDate: game.first_release_date
+        ? new Date(game.first_release_date * 1000).toLocaleDateString()
+        : null,
+      coverUrl: game.cover?.image_id
+        ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
+        : null,
+    }));
+
+    res.json(results);
   } catch (error) {
-    console.error('Error fetching games:', error);
-    res.status(500).json({ error: 'Failed to fetch games' });
+    console.error("Error searching games:", error);
+    res.status(500).json({ error: "Failed to search games" });
   }
 });
 
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+// error handling middleware
+app.use((err: Error, _req: Request, res: Response) => {
   console.error("Unhandled error:", err);
   res.status(500).json({ error: "Internal server error" });
 });
 
-// Start server
+// start server
 async function startServer() {
   try {
     await getAccessToken();
