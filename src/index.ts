@@ -3,6 +3,7 @@ dotenv.config();
 import axios, { AxiosError } from "axios";
 import express, { type Request, type Response } from "express";
 import cors from "cors";
+import gamesRouter from "./routes/games.js";
 
 // Initialize Express app
 const app = express();
@@ -11,6 +12,9 @@ const PORT = 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// routes
+app.use("/api/games", gamesRouter);
 
 // Environment variables
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -112,74 +116,6 @@ app.get("/game/:gameName", async (req: Request, res: Response) => {
       error: "Failed to fetch game data",
       details: axiosError.message,
     });
-  }
-});
-
-// add new game to collection
-app.post("/api/games", async (req: Request, res: Response) => {
-  try {
-    const gameData = req.body;
-
-    // basic validation
-    if (!gameData.title || !gameData.genre || !gameData.platform) {
-      return res.status(400).json({
-        error: "Missing required fields: title, genre, platform",
-      });
-    }
-
-    // here you would typically save to a database
-    // lets just return success for now
-    console.log("New game added:", gameData);
-
-    res.status(201).json({
-      message: "Game added successfully",
-      game: gameData,
-    });
-  } catch (error) {
-    console.error("Error adding game:", error);
-    res.status(500).json({ error: "Failed to add game" });
-  }
-});
-
-// search games for autocomplete
-app.get("/api/games/search", async (req: Request, res: Response) => {
-  try {
-    if (!accessToken) {
-      await getAccessToken();
-    }
-
-    const query = req.query.q as string;
-    if (!query || query.length < 2) {
-      return res.json([]);
-    }
-
-    const response = await axios.post<IGDBSearchResult[]>(
-      IGDB_API_URL,
-      `search "${query}"; fields name, first_release_date, cover.image_id; limit 10;`,
-      {
-        headers: {
-          "Client-ID": CLIENT_ID,
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json",
-        },
-      }
-    );
-
-    const results = response.data.map((game) => ({
-      id: game.id,
-      name: game.name,
-      releaseDate: game.first_release_date
-        ? new Date(game.first_release_date * 1000).toLocaleDateString()
-        : null,
-      coverUrl: game.cover?.image_id
-        ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
-        : null,
-    }));
-
-    res.json(results);
-  } catch (error) {
-    console.error("Error searching games:", error);
-    res.status(500).json({ error: "Failed to search games" });
   }
 });
 
