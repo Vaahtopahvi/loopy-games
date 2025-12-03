@@ -3,6 +3,7 @@ dotenv.config();
 import axios, { AxiosError } from "axios";
 import express, { type Request, type Response } from "express";
 import cors from "cors";
+import connectDB from "./server/db.js";
 import gamesRouter from "./routes/games.js";
 
 // Initialize Express app
@@ -128,7 +129,12 @@ app.use((err: Error, _req: Request, res: Response) => {
 // start server
 async function startServer() {
   try {
+    // fire the function to connect to MongoDB
+    await connectDB();
+
+    // then fire the function to get IGDB access token
     await getAccessToken();
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
