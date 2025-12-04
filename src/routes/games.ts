@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from "express";
+import { Game } from "../server/models/Game.js";
 
 interface IGDBGameResponse {
   id: number;
@@ -11,13 +12,13 @@ interface IGDBGameResponse {
 
 const router = express.Router();
 
-// Search games for autocomplete
+// search games for autocomplete
 router.get("/search", async (req: Request, res: Response) => {
   try {
-    // Import required modules here or at the top
+    // import required modules here or at the top
     const axios = (await import("axios")).default;
 
-    // Get access token function - you might want to move this to a shared service
+    // get access token function - might want to move this to a shared service later
     const getAccessToken = async () => {
       const dotenv = await import("dotenv");
       dotenv.default.config();
@@ -91,7 +92,23 @@ router.get("/search", async (req: Request, res: Response) => {
   }
 });
 
-// Add new game to collection
+// get all games from collection
+router.get("/", async (_req: Request, res: Response) => {
+  try {
+    const games = await Game.find().sort({ createdAt: -1 }); // most recent first
+
+    res.json({
+      message: "Games retrieved successfully",
+      games: games,
+      count: games.length,
+    });
+  } catch (error) {
+    console.error("Error retrieving games:", error);
+    res.status(500).json({ error: "Failed to retrieve games" });
+  }
+});
+
+// add new game to collection
 router.post("/", async (req: Request, res: Response) => {
   try {
     const gameData = req.body;
@@ -103,16 +120,62 @@ router.post("/", async (req: Request, res: Response) => {
       });
     }
 
-    // here you would typically save to a database
-    // lets just return success for now
-    console.log("New game added:", gameData);
+    // create new game document
+    const newGame = new Game({
+      title: gameData.title,
+      genre: gameData.genre,
+      platform: gameData.platform,
+      completionDate: gameData.completionDate,
+      playtimeHours: gameData.playtimeHours,
+      rating: gameData.rating,
+      review: gameData.review,
+      interestingFact: gameData.interestingFact,
+      coverImage: gameData.coverImage,
+      gameType: gameData.gameType,
+      recommended: gameData.recommended,
+      isOngoing: gameData.isOngoing,
+      completionist: gameData.completionist,
+    });
+
+    // save the new game to MongoDB
+    const savedGame = await newGame.save();
+
+    console.log("✅ Game saved to database:", savedGame.title);
 
     res.status(201).json({
       message: "Game added successfully",
-      game: gameData,
+      game: savedGame,
     });
   } catch (error) {
-    console.error("Error adding game:", error);
+    console.error("❌ Error adding game:", error);
+
+    // handle duplicate key error (same title + platform)
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === 11000
+    ) {
+      return res.status(409).json({
+        error:
+          "A game with this title and platform already exists in your collection",
+      });
+    }
+
+    // handle validation errors
+    if (
+      error &&
+      typeof error === "object" &&
+      "name" in error &&
+      error.name === "ValidationError"
+    ) {
+      const validationError = error as { message?: string };
+      return res.status(400).json({
+        error: "Validation error",
+        details: validationError.message || "Invalid game data",
+      });
+    }
+
     res.status(500).json({ error: "Failed to add game" });
   }
 });
