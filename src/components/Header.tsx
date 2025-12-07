@@ -16,7 +16,7 @@ export function Header({ games, onFilterChange, onAddGame }: HeaderProps) {
       <Container className="py-6 flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span className="text-xl font-semibold">
-            Tracking and review of my favorite ones
+            Tracking and personal review of my favorite ones
           </span>
           <Button onClick={onAddGame} className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 cursor-pointer">
             <Plus size={16} />
