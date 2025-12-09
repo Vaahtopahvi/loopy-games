@@ -1,5 +1,5 @@
 // import  { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { games as allGames } from "./data/games";
 import Home from "./pages/Home";
 import Header from "./components/Header";
@@ -11,15 +11,66 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./components/ui/dialog";
+import { type Game } from "./types/Game.js";
 
 export default function App() {
-  const [filteredGames, setFilteredGames] = useState(allGames);
+  const [games, setGames] = useState<Game[]>(allGames); // start with local data
+  const [filteredGames, setFilteredGames] = useState<Game[]>(allGames);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // load games from API on mount
+  useEffect(() => {
+    const loadGames = async () => {
+      try {
+        const { GameService } = await import("./services/gameService.js");
+        const apiGames = await GameService.getAllGames();
+
+        if (apiGames.length > 0) {
+          // use API data if available
+          setGames(apiGames);
+          setFilteredGames(apiGames);
+        } else {
+          // fall back to local data if no API data
+          setGames(allGames);
+          setFilteredGames(allGames);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load games from API, using local data:",
+          error
+        );
+        // keep local data as fallback
+        setGames(allGames);
+        setFilteredGames(allGames);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadGames();
+  }, []);
+
+  const handleGameAdded = async () => {
+    try {
+      const { GameService } = await import("./services/gameService.js");
+      const updatedGames = await GameService.getAllGames();
+      setGames(updatedGames);
+      setFilteredGames(updatedGames);
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error("Failed to refresh games after adding:", error);
+      // refresh the games from the local data as fallback
+      setGames(allGames);
+      setFilteredGames(allGames);
+      setIsFormOpen(false);
+    }
+  };
 
   return (
     <div className="min-h-screen text-white">
       <Header
-        games={allGames}
+        games={games}
         onFilterChange={setFilteredGames}
         onAddGame={() => setIsFormOpen(true)}
       />
@@ -30,10 +81,20 @@ export default function App() {
               <DialogHeader>
                 <DialogTitle className="text-white">Add New Game</DialogTitle>
               </DialogHeader>
-              <Form onGameAdded={() => setIsFormOpen(false)} />
+              <Form
+                onGameAdded={handleGameAdded}
+                onClose={() => setIsFormOpen(false)}
+              />
             </DialogContent>
           </Dialog>
-          <Home games={filteredGames} />
+
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="text-white">Loading games...</div>
+            </div>
+          ) : (
+            <Home games={filteredGames} />
+          )}
         </Container>
       </main>
     </div>
