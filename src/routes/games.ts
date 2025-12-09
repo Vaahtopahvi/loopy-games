@@ -81,7 +81,7 @@ router.get("/search", async (req: Request, res: Response) => {
         ? new Date(game.first_release_date * 1000).toLocaleDateString()
         : null,
       coverUrl: game.cover?.image_id
-        ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
+        ? `https://images.igdb.com/igdb/image/upload/t_thumb/${game.cover.image_id}.jpg`
         : null,
     }));
 
