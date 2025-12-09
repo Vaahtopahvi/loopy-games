@@ -150,15 +150,44 @@ export default function GameAutocomplete({
                 index === selectedIndex ? "bg-purple-600" : ""
               }`}
             >
-              <div className="flex justify-between items-center">
-                <span className="text-white font-medium">
-                  {suggestion.name}
-                </span>
-                {suggestion.releaseDate && (
-                  <span className="text-gray-400 text-sm">
-                    {suggestion.releaseDate}
-                  </span>
-                )}
+              <div className="flex items-center gap-3">
+                {/* Cover Image */}
+                <div className="flex-shrink-0 w-8 h-10 bg-gray-700 rounded overflow-hidden">
+                  {suggestion.coverUrl ? (
+                    <img
+                      src={suggestion.coverUrl}
+                      alt={`${suggestion.name} cover`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // replace with game controller icon on error
+                        const target = e.target as HTMLImageElement;
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML =
+                            '<div class="w-full h-full flex items-center justify-center text-gray-500 text-xs">🎮</div>';
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
+                      🎮
+                    </div>
+                  )}
+                </div>
+
+                {/* Game Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <span className="text-white font-medium truncate block">
+                      {suggestion.name}
+                    </span>
+                    {suggestion.releaseDate && (
+                      <span className="text-gray-400 text-xs ml-2 flex-shrink-0">
+                        {suggestion.releaseDate}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </li>
           ))}
