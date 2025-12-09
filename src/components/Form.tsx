@@ -33,9 +33,10 @@ const PLATFORMS = [
 
 interface FormProps {
   onGameAdded?: () => void;
+  onClose?: () => void;
 }
 
-function Form({ onGameAdded }: FormProps) {
+function Form({ onGameAdded, onClose }: FormProps) {
   const [gameTitle, setGameTitle] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [genre, setGenre] = useState("Select genre");
@@ -100,33 +101,27 @@ function Form({ onGameAdded }: FormProps) {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/games", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newGame),
-      });
+      // import the game service
+      const { GameService } = await import("../services/gameService.js");
+      // add the new game to the database
+      await GameService.addGame(newGame);
 
-      if (response.ok) {
-        alert("Game added successfully! Change this to a toast notification");
-        // reset form
-        setGameTitle("");
-        setCoverImageUrl("");
-        setGenre("Select genre");
-        setPlatform("Select platform");
-        setPlaytimeHours("");
-        setCompletionDate("");
-        setIsOngoing(false);
-        setIsCompleted(false);
-        setRating(0);
-        setReview("");
-        setInterestingFact("");
-        // notify parent component that the game has been added
-        onGameAdded?.();
-      } else {
-        alert("Failed to add game. Please try again.");
-      }
+      alert("Game added successfully!"); // TODO: change this to a toast notification
+      // reset form
+      setGameTitle("");
+      setCoverImageUrl("");
+      setGenre("Select genre");
+      setPlatform("Select platform");
+      setPlaytimeHours("");
+      setCompletionDate("");
+      setIsOngoing(false);
+      setIsCompleted(false);
+      setRating(0);
+      setReview("");
+      setInterestingFact("");
+      // notify parent component that the game has been added
+      onGameAdded?.();
+      onClose?.();
     } catch (error) {
       console.error("Error adding game:", error);
       alert("Error adding game. Please check your connection.");
