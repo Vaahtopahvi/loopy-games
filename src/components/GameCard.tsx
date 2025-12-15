@@ -5,7 +5,9 @@ import {
   CardFooter,
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { Switch } from "../components/ui/switch";
+// import { Switch } from "../components/ui/switch";
+// import { type VariantProps } from "class-variance-authority";
+// import { badgeVariants } from "../components/ui/badge";
 import {
   Clock,
   Gamepad2,
@@ -17,6 +19,7 @@ import {
 } from "lucide-react";
 import { type Game } from "../types/Game";
 
+/*
 const GENRES = [
   "Action",
   "Adventure",
@@ -44,7 +47,8 @@ const PLATFORMS = [
   "Mobile",
   "Nintendo Switch",
   "Retro Console",
-];
+]; 
+*/
 
 // helper function to convert genre to badge variant
 const getGenreVariant = (genre: string): string => {
@@ -189,7 +193,10 @@ export function GameCard({ game }: GameCardProps) {
           <span className="text-sm">Recommend?</span>
         </div>
         {game.recommended ? (
-          <Badge variant="secondary" className="bg-(--badge-recommended) hover:bg-(--badge-recommended)/80">
+          <Badge
+            variant="secondary"
+            className="bg-(--badge-recommended) hover:bg-(--badge-recommended)/80"
+          >
             Recommended
           </Badge>
         ) : (
