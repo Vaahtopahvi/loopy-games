@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { type Game } from "../types/Game";
 
-/*
+/* un comment
 const GENRES = [
   "Action",
   "Adventure",
