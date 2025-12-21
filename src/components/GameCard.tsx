@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -60,6 +61,13 @@ type GameCardProps = {
 };
 
 export function GameCard({ game }: GameCardProps) {
+  const [isReviewExpanded, setIsReviewExpanded] = useState(false);
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).trim() + "...";
+  };
+
   return (
     <Card className="bg-(--bg-card) text-white w-full flex flex-col overflow-hidden p-0 gap-0">
       {/* Header: Cover Image + Badges + Edit Button */}
@@ -175,7 +183,17 @@ export function GameCard({ game }: GameCardProps) {
 
         <div>
           <strong className="block mb-1 text-sm">Review</strong>
-          <p className="text-sm text-white/90 leading-relaxed">{game.review}</p>
+          <p className="text-sm text-white/90 leading-relaxed">
+            {isReviewExpanded ? game.review : truncateText(game.review, 250)}
+          </p>
+          {game.review.length > 250 && (
+            <button
+              onClick={() => setIsReviewExpanded(!isReviewExpanded)}
+              className="text-sm text-blue-400 hover:text-blue-300 mt-1 transition-colors"
+            >
+              {isReviewExpanded ? "Read Less" : "Read More"}
+            </button>
+          )}
         </div>
 
         {game.interestingFact && (
