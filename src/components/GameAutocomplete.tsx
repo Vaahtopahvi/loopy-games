@@ -27,6 +27,7 @@ export default function GameAutocomplete({
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isMouseOverSuggestions, setIsMouseOverSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -123,8 +124,12 @@ export default function GameAutocomplete({
           onKeyDown={handleKeyDown}
           onFocus={() => value.length >= 2 && setIsOpen(true)}
           onBlur={() => {
-            // Delay closing to allow click on suggestions
-            setTimeout(() => setIsOpen(false), 150);
+            // Only close if mouse is not over suggestions
+            setTimeout(() => {
+              if (!isMouseOverSuggestions) {
+                setIsOpen(false);
+              }
+            }, 150);
           }}
           placeholder={placeholder}
           className="w-full px-3 py-2 pl-10 bg-gray-900 border rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -141,6 +146,8 @@ export default function GameAutocomplete({
         <ul
           ref={listRef}
           className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-md shadow-lg max-h-60 overflow-auto"
+          onMouseEnter={() => setIsMouseOverSuggestions(true)}
+          onMouseLeave={() => setIsMouseOverSuggestions(false)}
         >
           {suggestions.map((suggestion, index) => (
             <li
@@ -198,7 +205,11 @@ export default function GameAutocomplete({
         value.length >= 2 &&
         suggestions.length === 0 &&
         !isLoading && (
-          <div className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-md shadow-lg p-3">
+          <div
+            className="absolute z-50 w-full mt-1 bg-gray-900 border border-gray-700 rounded-md shadow-lg p-3"
+            onMouseEnter={() => setIsMouseOverSuggestions(true)}
+            onMouseLeave={() => setIsMouseOverSuggestions(false)}
+          >
             <p className="text-gray-400 text-sm">
               No games found matching "{value}"
             </p>
