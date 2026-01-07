@@ -71,3 +71,5 @@ export default tseslint.config([
 Known problems:
 
 - Get the right lucide icons for date, completionist, genre, game mode, rating, clock / time spent, info / about this site
+
+- Korjaa kun pitää valita entry osoittimella
