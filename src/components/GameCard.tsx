@@ -6,9 +6,6 @@ import {
   CardFooter,
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-// import { Switch } from "../components/ui/switch";
-// import { type VariantProps } from "class-variance-authority";
-// import { badgeVariants } from "../components/ui/badge";
 import {
   Clock,
   Gamepad2,
