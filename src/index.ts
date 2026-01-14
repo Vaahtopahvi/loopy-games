@@ -4,7 +4,8 @@ import axios, { AxiosError } from "axios";
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import connectDB from "./server/db.js";
-import gamesRouter from "./routes/games.js";
+import gamesRouter from "./server/routes/games.js";
+import authRouter from "./server/routes/auth.js";
 
 // Initialize Express app
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // routes
+app.use("/api/auth", authRouter);
 app.use("/api/games", gamesRouter);
 
 // Environment variables
