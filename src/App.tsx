@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Header from "./components/Header";
 import Container from "./components/Container";
 import Form from "./components/Form";
+import AdminLogin from "./components/AdminLogin";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,17 @@ export default function App() {
   const [filteredGames, setFilteredGames] = useState<Game[]>(allGames);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminToken, setAdminToken] = useState<string | null>(null);
+
+  // Check if admin token exists in localStorage on app load
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      setAdminToken(token);
+      setIsAdminAuthenticated(true);
+    }
+  }, []);
 
   // load games from API on mount
   useEffect(() => {
@@ -51,6 +63,18 @@ export default function App() {
     loadGames();
   }, []);
 
+  const handleLoginSuccess = (token: string) => {
+    setAdminToken(token);
+    setIsAdminAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    setAdminToken(null);
+    setIsAdminAuthenticated(false);
+    setIsFormOpen(false);
+  };
+
   const handleGameAdded = async () => {
     try {
       const { GameService } = await import("./services/gameService.js");
@@ -73,20 +97,32 @@ export default function App() {
         games={games}
         onFilterChange={setFilteredGames}
         onAddGame={() => setIsFormOpen(true)}
+        isAdminLoggedIn={isAdminAuthenticated}
+        onLogout={handleLogout}
       />
       <main>
         <Container className="py-6">
-          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="text-white">Add New Game</DialogTitle>
-              </DialogHeader>
-              <Form
-                onGameAdded={handleGameAdded}
-                onClose={() => setIsFormOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
+          {/* Show login form if not authenticated, otherwise show add game form */}
+          {isAdminAuthenticated ? (
+            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="text-white">Add New Game</DialogTitle>
+                </DialogHeader>
+                <Form
+                  onGameAdded={handleGameAdded}
+                  onClose={() => setIsFormOpen(false)}
+                  adminToken={adminToken}
+                />
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <DialogContent>
+                <AdminLogin onLoginSuccess={handleLoginSuccess} />
+              </DialogContent>
+            </Dialog>
+          )}
 
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
