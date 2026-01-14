@@ -7,8 +7,7 @@
     "dev": "vite",
     "dev:server": "tsx watch src/index.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
-    "build": "npm install && npm install --prefix client && npm run build --prefix client && tsc",
-    "start": "node dist/index.js",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
