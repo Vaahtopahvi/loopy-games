@@ -3,17 +3,27 @@ dotenv.config();
 import axios, { AxiosError } from "axios";
 import express, { type Request, type Response } from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./server/db.js";
 import gamesRouter from "./server/routes/games.js";
 import authRouter from "./server/routes/auth.js";
 
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Initialize Express app
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from Vite build output (production)
+const distPath = path.join(__dirname, "../dist");
+app.use(express.static(distPath));
 
 // routes
 app.use("/api/auth", authRouter);
@@ -120,6 +130,11 @@ app.get("/game/:gameName", async (req: Request, res: Response) => {
       details: axiosError.message,
     });
   }
+});
+
+// Serve React app for all non-API routes (SPA fallback)
+app.get(/^(?!\/api\/).*/, (_req: Request, res: Response) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 // error handling middleware

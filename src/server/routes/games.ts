@@ -110,75 +110,80 @@ router.get("/", async (_req: Request, res: Response) => {
 });
 
 // add new game to collection
-router.post("/", authenticate, adminOnly, async (req: Request, res: Response) => {
-  try {
-    const gameData = req.body;
+router.post(
+  "/",
+  authenticate,
+  adminOnly,
+  async (req: Request, res: Response) => {
+    try {
+      const gameData = req.body;
 
-    // basic validation
-    if (!gameData.title || !gameData.genre || !gameData.platform) {
-      return res.status(400).json({
-        error: "Missing required fields: title, genre, platform",
+      // basic validation
+      if (!gameData.title || !gameData.genre || !gameData.platform) {
+        return res.status(400).json({
+          error: "Missing required fields: title, genre, platform",
+        });
+      }
+
+      // create new game document
+      const newGame = new Game({
+        title: gameData.title,
+        genre: gameData.genre,
+        platform: gameData.platform,
+        completionDate: gameData.completionDate,
+        playtimeHours: gameData.playtimeHours,
+        rating: gameData.rating,
+        review: gameData.review,
+        interestingFact: gameData.interestingFact,
+        coverImage: gameData.coverImage,
+        gameType: gameData.gameType,
+        recommended: gameData.recommended,
+        isOngoing: gameData.isOngoing,
+        completionist: gameData.completionist,
       });
-    }
 
-    // create new game document
-    const newGame = new Game({
-      title: gameData.title,
-      genre: gameData.genre,
-      platform: gameData.platform,
-      completionDate: gameData.completionDate,
-      playtimeHours: gameData.playtimeHours,
-      rating: gameData.rating,
-      review: gameData.review,
-      interestingFact: gameData.interestingFact,
-      coverImage: gameData.coverImage,
-      gameType: gameData.gameType,
-      recommended: gameData.recommended,
-      isOngoing: gameData.isOngoing,
-      completionist: gameData.completionist,
-    });
+      // save the new game to MongoDB
+      const savedGame = await newGame.save();
 
-    // save the new game to MongoDB
-    const savedGame = await newGame.save();
+      console.log("✅ Game saved to database:", savedGame.title);
 
-    console.log("✅ Game saved to database:", savedGame.title);
-
-    res.status(201).json({
-      message: "Game added successfully",
-      game: savedGame,
-    });
-  } catch (error) {
-    console.error("❌ Error adding game:", error);
-
-    // handle duplicate key error (same title + platform)
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      error.code === 11000
-    ) {
-      return res.status(409).json({
-        error:
-          "A game with this title and platform already exists in your collection",
+      res.status(201).json({
+        message: "Game added successfully",
+        game: savedGame,
       });
-    }
+    } catch (error) {
+      console.error("❌ Error adding game:", error);
 
-    // handle validation errors
-    if (
-      error &&
-      typeof error === "object" &&
-      "name" in error &&
-      error.name === "ValidationError"
-    ) {
-      const validationError = error as { message?: string };
-      return res.status(400).json({
-        error: "Validation error",
-        details: validationError.message || "Invalid game data",
-      });
-    }
+      // handle duplicate key error (same title + platform)
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        error.code === 11000
+      ) {
+        return res.status(409).json({
+          error:
+            "A game with this title and platform already exists in your collection",
+        });
+      }
 
-    res.status(500).json({ error: "Failed to add game" });
+      // handle validation errors
+      if (
+        error &&
+        typeof error === "object" &&
+        "name" in error &&
+        error.name === "ValidationError"
+      ) {
+        const validationError = error as { message?: string };
+        return res.status(400).json({
+          error: "Validation error",
+          details: validationError.message || "Invalid game data",
+        });
+      }
+
+      res.status(500).json({ error: "Failed to add game" });
+    }
   }
-});
+);
 
 export default router;

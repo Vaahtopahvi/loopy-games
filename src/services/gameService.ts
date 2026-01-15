@@ -20,7 +20,10 @@ export class GameService {
   }
 
   // add a new game to the database
-  static async addGame(gameData: Omit<Game, "id">, adminToken?: string | null): Promise<Game> {
+  static async addGame(
+    gameData: Omit<Game, "id">,
+    adminToken?: string | null
+  ): Promise<Game> {
     try {
       const headers: Record<string, string> = {
         "Content-Type": "application/json",

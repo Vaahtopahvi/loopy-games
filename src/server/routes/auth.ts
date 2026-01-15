@@ -22,9 +22,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
     // Validate input
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ error: "Email and password are required" });
+      return res.status(400).json({ error: "Email and password are required" });
     }
 
     // Find user by email
@@ -81,9 +79,7 @@ router.post("/register", async (req: Request, res: Response) => {
 
     // Validate input
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ error: "Email and password are required" });
+      return res.status(400).json({ error: "Email and password are required" });
     }
 
     // Check if user already exists
