@@ -12,12 +12,12 @@ type HeaderProps = {
   onLogout?: () => void;
 };
 
-export function Header({ 
-  games, 
-  onFilterChange, 
+export function Header({
+  games,
+  onFilterChange,
   onAddGame,
   isAdminLoggedIn = false,
-  onLogout
+  onLogout,
 }: HeaderProps) {
   return (
     <header className="w-full border-b">
@@ -30,13 +30,16 @@ export function Header({
             {isAdminLoggedIn && (
               <span className="text-sm text-green-400 mr-2">✓ Admin</span>
             )}
-            <Button onClick={onAddGame} className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 cursor-pointer">
+            <Button
+              onClick={onAddGame}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center gap-2 cursor-pointer"
+            >
               <Plus size={16} />
               Add New Game
             </Button>
             {isAdminLoggedIn && onLogout && (
-              <Button 
-                onClick={onLogout} 
+              <Button
+                onClick={onLogout}
                 className="bg-red-600 hover:bg-red-700 inline-flex items-center gap-2 cursor-pointer"
               >
                 <LogOut size={16} />
