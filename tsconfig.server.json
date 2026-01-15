@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "noEmit": false,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "declaration": false
+  },
+  "include": ["src/index.ts", "src/server/**/*.ts"],
+  "exclude": ["node_modules", "dist", "src/components", "src/pages", "src/services", "src/data", "src/lib", "src/types", "src/assets"]
+}
