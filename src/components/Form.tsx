@@ -34,9 +34,10 @@ const PLATFORMS = [
 interface FormProps {
   onGameAdded?: () => void;
   onClose?: () => void;
+  adminToken?: string | null;
 }
 
-function Form({ onGameAdded, onClose }: FormProps) {
+function Form({ onGameAdded, onClose, adminToken }: FormProps) {
   const [gameTitle, setGameTitle] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [genre, setGenre] = useState("Select genre");
@@ -48,7 +49,6 @@ function Form({ onGameAdded, onClose }: FormProps) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [interestingFact, setInterestingFact] = useState("");
-  const [recommended, setRecommended] = useState(false);
 
   const handleGameSelect = (game: {
     id: number;
@@ -96,7 +96,7 @@ function Form({ onGameAdded, onClose }: FormProps) {
       interestingFact,
       coverImage: coverImageUrl,
       gameType: "story" as const, // default to story, could be enhanced later
-      recommended,
+      recommended: false, // default to false, could be enhanced later
       isOngoing,
       completionist: isCompleted,
     };
@@ -104,8 +104,8 @@ function Form({ onGameAdded, onClose }: FormProps) {
     try {
       // import the game service
       const { GameService } = await import("../services/gameService.js");
-      // add the new game to the database
-      await GameService.addGame(newGame);
+      // add the new game to the database with admin token
+      await GameService.addGame(newGame, adminToken);
 
       alert("Game added successfully!"); // TODO: change this to a toast notification
       // reset form
@@ -120,7 +120,6 @@ function Form({ onGameAdded, onClose }: FormProps) {
       setRating(0);
       setReview("");
       setInterestingFact("");
-      setRecommended(false);
       // notify parent component that the game has been added
       onGameAdded?.();
       onClose?.();
@@ -311,31 +310,6 @@ function Form({ onGameAdded, onClose }: FormProps) {
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* recommendation section */}
-        <div>
-          <label className="block text-sm font-medium text-white mb-2">
-            Recommendation
-          </label>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setRecommended(!recommended)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                recommended ? "bg-purple-600" : "bg-gray-700"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  recommended ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
-            <span className="text-white text-sm">
-              {recommended ? "Recommended" : "Give it a try"}
-            </span>
           </div>
         </div>
 
