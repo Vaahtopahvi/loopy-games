@@ -1,5 +1,6 @@
 import express, { type Request, type Response } from "express";
 import { Game } from "../models/Game.js";
+import { authenticate, adminOnly } from "../middleware/auth.js";
 
 interface IGDBGameResponse {
   id: number;
@@ -109,7 +110,7 @@ router.get("/", async (_req: Request, res: Response) => {
 });
 
 // add new game to collection
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", authenticate, adminOnly, async (req: Request, res: Response) => {
   try {
     const gameData = req.body;
 
