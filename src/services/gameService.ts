@@ -20,13 +20,20 @@ export class GameService {
   }
 
   // add a new game to the database
-  static async addGame(gameData: Omit<Game, "id">): Promise<Game> {
+  static async addGame(gameData: Omit<Game, "id">, adminToken?: string | null): Promise<Game> {
     try {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      // Add JWT token to Authorization header if provided
+      if (adminToken) {
+        headers["Authorization"] = `Bearer ${adminToken}`;
+      }
+
       const response = await fetch(`${this.baseUrl}/games`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(gameData),
       });
 
