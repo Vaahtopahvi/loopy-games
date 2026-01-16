@@ -102,7 +102,7 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
       </form>
 
       <p className="text-gray-400 text-sm mt-4 text-center">
-        Contact your system administrator if you don't have an account.
+        Sorry lil bro, but from here on out it's admin only stuff.
       </p>
     </div>
   );
