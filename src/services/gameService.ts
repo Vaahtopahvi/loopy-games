@@ -2,7 +2,7 @@ import { type Game } from "../types/Game.js";
 
 // handle all the game related API calls
 export class GameService {
-  private static baseUrl = "http://localhost:3000/api";
+  private static baseUrl = "/api";
 
   // get all games from the database
   static async getAllGames(): Promise<Game[]> {
