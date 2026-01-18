@@ -52,7 +52,7 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 bg-gray-900 border border-gray-700 rounded-lg">
+    <div className="w-full max-w-md mx-auto p-6 bg-gray-900 rounded-lg">
       <h2 className="text-2xl font-bold text-white mb-6">Admin Login</h2>
 
       {error && (
