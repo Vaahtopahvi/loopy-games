@@ -6,12 +6,7 @@ import Header from "./components/Header";
 import Container from "./components/Container";
 import Form from "./components/Form";
 import AdminLogin from "./components/AdminLogin";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "./components/ui/dialog";
+import { SimpleModal } from "./components/SimpleModal";
 import { type Game } from "./types/Game.js";
 
 export default function App() {
@@ -104,24 +99,24 @@ export default function App() {
         <Container className="py-6">
           {/* Show login form if not authenticated, otherwise show add game form */}
           {isAdminAuthenticated ? (
-            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="text-white">Add New Game</DialogTitle>
-                </DialogHeader>
-                <Form
-                  onGameAdded={handleGameAdded}
-                  onClose={() => setIsFormOpen(false)}
-                  adminToken={adminToken}
-                />
-              </DialogContent>
-            </Dialog>
+            <SimpleModal
+              isOpen={isFormOpen}
+              onClose={() => setIsFormOpen(false)}
+              title="Add New Game"
+            >
+              <Form
+                onGameAdded={handleGameAdded}
+                onClose={() => setIsFormOpen(false)}
+                adminToken={adminToken}
+              />
+            </SimpleModal>
           ) : (
-            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-              <DialogContent>
-                <AdminLogin onLoginSuccess={handleLoginSuccess} />
-              </DialogContent>
-            </Dialog>
+            <SimpleModal
+              isOpen={isFormOpen}
+              onClose={() => setIsFormOpen(false)}
+            >
+              <AdminLogin onLoginSuccess={handleLoginSuccess} />
+            </SimpleModal>
           )}
 
           {isLoading ? (
