@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import { type Request, type Response, type NextFunction } from "express";
 
+//get JWT secret from env
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
 // Extend Express Request to include user information
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -41,8 +44,7 @@ export const authenticate = (
     // Verify token using JWT_SECRET
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "your-secret-key"
-    );
+      JWT_SECRET);
 
     // Attach user data to request object
     if (typeof decoded === "object" && "id" in decoded) {
