@@ -7,9 +7,7 @@ Here is a picture of how it looks like:
 
 ## A video showcasing how adding a game looks like
 
-https://github.com/user/repo/assets/Screencast_20260127_044437.webm
-
-<video src="src/assets/Screencast_20260127_044437.webm" controls width="100%"></video>
+![Adding a game demo](src/assets/screencast-demo.gif)
 
 ## Project tech stack
 
