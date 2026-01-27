@@ -180,7 +180,7 @@ export function GameCard({ game }: GameCardProps) {
 
         <div>
           <strong className="block mb-1 text-sm">Review</strong>
-          <p className="text-sm text-white/90 leading-relaxed">
+          <p className="text-sm text-white/90 leading-relaxed whitespace-pre-wrap break-words">
             {isReviewExpanded ? game.review : truncateText(game.review, 250)}
           </p>
           {game.review.length > 250 && (
